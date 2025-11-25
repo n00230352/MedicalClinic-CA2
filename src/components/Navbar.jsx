@@ -1,10 +1,37 @@
 import { Link } from 'react-router';
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
 
 export default function Navbar() {
     return (
-        <>
-            <Link to='/'>Home</Link> |
-        </>
+        <NavigationMenu>
+            <NavigationMenuList>
+                <NavigationMenuItem>
+                    <NavigationMenuLink asChild><Link to=''>Home</Link></NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem className="hidden md:block">
+                <NavigationMenuTrigger> Doctors</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                        <ul className="grid w-[200px] gap-4">
+                        <li>
+                            <NavigationMenuLink asChild>
+                            <Link to='/doctors'>All</Link>
+                            </NavigationMenuLink>
+                            <NavigationMenuLink asChild>
+                            <Link href="#">Create</Link>
+                            </NavigationMenuLink>
+                        </li>
+                        </ul>
+                    </NavigationMenuContent>
+                </NavigationMenuItem>
+            </NavigationMenuList>
+        </NavigationMenu>
     );
 };
 
