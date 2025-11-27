@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
 
 import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-
-import { Button } from "@/components/ui/button"
-import { Link } from "react-router";
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 
 export default function Index() {
     const [doctors, setDoctors] = useState([]);
@@ -37,34 +37,39 @@ export default function Index() {
     console.log("Hello");
     }, []);
 
-    const doctorCards = doctors.map((doctor) => {
-        return (
-            <Card key={doctor.id}>
-                <CardHeader>
-                    <CardTitle>{doctor.first_name} {doctor.last_name}</CardTitle>
-
-                    <CardDescription>
-                        <div><strong>Email:</strong> {doctor.email}</div>
-                        <div><strong>Phone:</strong> {doctor.phone}</div>
-                        <div><strong>Specialisation:</strong> {doctor.specialisation}</div>
-                    </CardDescription>
-                </CardHeader>
-                <CardFooter>
-                    <Button 
-                    asChild
-                    variant="outline">
-                        <Link size='md' to={`/doctors/${doctor.id}`}>
-                            View
-                        </Link></Button>
-                    </CardFooter>
-                </Card>
-        );
-    });
-
     return (
         <>
-            <h1>Doctor page</h1>
-            {doctorCards}
-        </>
+            <Button
+        asChild
+        variant='outline'
+        className='mb-4 mr-auto block'
+      ><Link size='sm' to={`/doctors/create`}>Create New Doctor</Link>
+      </Button>
+
+
+    <Table>
+      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>First Name</TableHead>
+          <TableHead>Last Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Phone</TableHead>
+          <TableHead>Specialisation</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {doctors.map((doctor) => (
+          <TableRow key={doctor.id}>
+            <TableCell>{doctor.first_name}</TableCell>
+            <TableCell>{doctor.last_name}</TableCell>
+            <TableCell>{doctor.email}</TableCell>
+            <TableCell>{doctor.phone}</TableCell>
+            <TableCell>{doctor.specialisation}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+    </>
     );
 };

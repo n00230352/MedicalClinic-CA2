@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 
-export default function LoginForm({loggedIn, onLogin}){
+export default function LoginForm({ onLogin}){
     const [form, setForm] = useState({});
 
     const handleForm = e => {
@@ -39,7 +39,7 @@ export default function LoginForm({loggedIn, onLogin}){
 
                 onLogin(true, response.data.token);
             } catch (err) {
-                console.log(err);
+                console.log(err.response.data);
             }
         };
 
