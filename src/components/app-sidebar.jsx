@@ -67,11 +67,7 @@ const data = {
   ]
 }
 
-export function AppSidebar({
-  onLogin,
-  loggedIn,
-  ...props
-}) {
+export function AppSidebar({...props}) {
 
   const location = useLocation();
 
@@ -111,7 +107,7 @@ export function AppSidebar({
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} onLogin={onLogin}  />
+        <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
     </>

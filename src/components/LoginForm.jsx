@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,9 +13,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-
-export default function LoginForm({ onLogin}){
+export default function LoginForm(){
     const [form, setForm] = useState({});
+    const { onLogin } = useAuth();
 
     const handleForm = e => {
         setForm({...form,
@@ -25,27 +25,9 @@ export default function LoginForm({ onLogin}){
 
     const submitForm = (e) => {
         e.preventDefault();
-
-        const fetchLogIn = async () => {
-            const options = {
-                method: "POST",
-                url: "/login",
-                data: form
-            };
-
-            try {
-                let response = await axios.request(options);
-                console.log(response.data);
-
-                onLogin(true, response.data.token);
-            } catch (err) {
-                console.log(err.response.data);
-            }
-        };
-
-    fetchLogIn();
-
         console.log(form);
+
+        onLogin(form.email, form.password);
     };
 
     return(

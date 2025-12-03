@@ -1,4 +1,5 @@
-import {useState, useEffect} from 'react'
+import { useEffect, useState } from "react";
+import { AuthProvider } from "./hooks/useAuth";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
@@ -14,37 +15,17 @@ import DoctorsCreate from '@/pages/doctors/Create';
 import DoctorsEdit from '@/pages/doctors/Edit';
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-
-    if(token){
-      setLoggedIn(true);
-    }
-
-  }, []);
-
-  const onLogin = (auth, token) => {
-    setLoggedIn(auth);
-
-    if(auth){
-      localStorage.setItem('token', token)
-    } 
-    else {
-      localStorage.removeItem('token')
-    }
-  };
 
   return (
     <Router>
+      <AuthProvider>
       <SidebarProvider
         style={{
           "--sidebar-width": "calc(var(--spacing) * 72)",
           "--header-height": "calc(var(--spacing) * 12)",
         }}
       >
-        <AppSidebar variant="inset" loggedIn={loggedIn} onLogin={onLogin} />
+        <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
           {/* <Navbar onLogin={onLogin} loggedIn={loggedIn} /> */}
@@ -56,14 +37,14 @@ export default function App() {
                 <Routes>
                   <Route
                     path="/"
-                    element={<Home onLogin={onLogin} loggedIn={loggedIn} />}
+                    element={<Home />}
                   />
 
                   <Route path="/doctors" element={<DoctorsIndex />} />
                   <Route path="/doctors/create" element={<DoctorsCreate />} />
                   <Route
                     path="/doctors/:id"
-                    element={<DoctorsShow loggedIn={loggedIn} />}
+                    element={<DoctorsShow />}
                   />
                   <Route
                     path="/doctors/:id/edit"
@@ -75,6 +56,7 @@ export default function App() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </AuthProvider>
     </Router>
   );
 }
