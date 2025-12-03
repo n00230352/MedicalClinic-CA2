@@ -20,7 +20,7 @@ export default function Edit() {
     const fetchDoctor = async () => {
       const options = {
         method: "GET",
-        url: `https://ca2-med-api.vercel.app/doctors/${id}`,
+        url: `/doctors/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,7 +60,7 @@ export default function Edit() {
 
     const options = {
       method: "PATCH",
-      url: `https://ca2-med-api.vercel.app/doctors/${id}`,
+      url: `/doctors/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

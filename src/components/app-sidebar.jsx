@@ -9,6 +9,12 @@ import {
   IconClipboardSearch,
 } from "@tabler/icons-react"
 
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
+
+
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -66,7 +72,28 @@ export function AppSidebar({
   loggedIn,
   ...props
 }) {
+
+  const location = useLocation();
+
+  let message = location.state?.message;
+  let type = location.state?.type;
+
+  useEffect(() => {
+    if (message) {
+      if (type === 'error') {
+        toast.error(message);
+      }
+      else if (type === 'success') {
+        toast.success(message);
+      } else {
+        toast(message);
+      }
+    }
+  }, [message]);
+
   return (
+    <>
+    <Toaster position="top-right" richColors />
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
@@ -74,7 +101,7 @@ export function AppSidebar({
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">DOC</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -87,5 +114,6 @@ export function AppSidebar({
         <NavUser user={data.user} onLogin={onLogin}  />
       </SidebarFooter>
     </Sidebar>
+    </>
   );
 }

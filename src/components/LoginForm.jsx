@@ -29,7 +29,7 @@ export default function LoginForm({ onLogin}){
         const fetchLogIn = async () => {
             const options = {
                 method: "POST",
-                url: " https://ca2-med-api.vercel.app/login",
+                url: "/login",
                 data: form
             };
 

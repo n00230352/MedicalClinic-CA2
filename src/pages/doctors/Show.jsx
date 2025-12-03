@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/config/api";
 import { useParams } from 'react-router';
+
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 export default function Show(){
     const [doctors, setDoctors] = useState([]);
@@ -12,7 +22,7 @@ export default function Show(){
         const fetchDoctors = async () => {
         const options = {
             method: "GET",
-            url: ` https://ca2-med-api.vercel.app/doctors/${id}`,
+            url: `/doctors/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -34,14 +44,18 @@ export default function Show(){
     
 
     return (
-        <>
-            <h2>Doctor Info</h2>
-
-            <p>First name: {doctors.first_name}</p>
-            <p>Last name: {doctors.last_name}</p>
-            <p>Email: {doctors.email}</p>
-            <p>Phone: {doctors.phone}</p>
-            <p>Specialisation: {doctors.specialisation}</p>
-        </>
+        <Card className="w-full max-w-md">
+            <CardHeader>
+                <CardTitle>{doctors.first_name} {doctors.last_name}</CardTitle>
+                <CardDescription>
+                    {doctors.email}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <img src={doctors.image_path} alt={`${doctors.first_name} ${doctors.last_name}`} />
+            </CardContent>
+            <CardFooter className="flex-col gap-2">
+            </CardFooter>
+        </Card>
     );
 }
