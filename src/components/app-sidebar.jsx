@@ -51,7 +51,7 @@ const data = {
     },
     {
       title: "Appointments",
-      url: "#",
+      url: "/appointments",
       icon: IconCalendarClock,
     },
     {
