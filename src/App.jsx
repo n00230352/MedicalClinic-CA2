@@ -9,10 +9,17 @@ import { SiteHeader } from '@/components/site-header';
 
 import Home from '@/pages/Home';
 
+//doctors pages
 import DoctorsIndex from '@/pages/doctors/Index';
 import DoctorsShow from '@/pages/doctors/Show';
 import DoctorsCreate from '@/pages/doctors/Create';
 import DoctorsEdit from '@/pages/doctors/Edit';
+
+//patients pages
+import PatientsIndex from '@/pages/patients/Index';
+import PatientsShow from '@/pages/patients/Show';
+import PatientsCreate from '@/pages/patients/Create';
+import PatientsEdit from '@/pages/patients/Edit';
 
 export default function App() {
 
@@ -39,7 +46,7 @@ export default function App() {
                     path="/"
                     element={<Home />}
                   />
-
+                  {/* doctors routes */}
                   <Route path="/doctors" element={<DoctorsIndex />} />
                   <Route path="/doctors/create" element={<DoctorsCreate />} />
                   <Route
@@ -49,6 +56,18 @@ export default function App() {
                   <Route
                     path="/doctors/:id/edit"
                     element={<DoctorsEdit />}
+                  />
+
+                  {/* patients routes */}
+                  <Route path="/patients" element={<PatientsIndex />} />
+                  <Route path="/patients/create" element={<PatientsCreate />} />
+                  <Route
+                    path="/patients/:id"
+                    element={<PatientsShow />}
+                  />
+                  <Route
+                    path="/patients/:id/edit"
+                    element={<PatientsEdit />}
                   />
                 </Routes>
               </div>
