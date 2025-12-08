@@ -6,14 +6,41 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
+import { useForm, Controller } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { ChevronDownIcon } from "lucide-react";
+
+const formSchema = z.object({
+  appointment_date: z.date({ required_error: "Appointment date is required" }),
+  doctor_id: z.string().min(1, "Doctor ID is required"),
+  patient_id: z.string().min(1, "Patient ID is required"),
+});
+
 export default function Edit() {
-  const [form, setForm] = useState({
-      appointment_date: "",
-      doctor_id: "",
-      patient_id: "",
-  });
 
   const { token } = useAuth();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      appointment_date: undefined,
+      doctor_id: "",
+      patient_id: "",
+    },
+    mode: "onChange",
+  });
+  
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -26,13 +53,16 @@ export default function Edit() {
       };
 
       try {
-        let response = await axios.request(options);
-        console.log(response.data);
-        let appointment = response.data;
-        setForm({
-            appointment_date: appointment.appointment_date,
-            doctor_id: appointment.doctor_id,
-            patient_id: appointment.patient_id,
+        const response = await axios.request(options);
+        const appointment = response.data;
+        console.log("Fetched appointment:", appointment);
+
+        form.reset({
+            appointment_date: appointment.appointment_date
+            ? new Date(appointment.appointment_date) 
+            : undefined,
+            doctor_id: appointment.doctor_id?.toString() ?? "",
+            patient_id: appointment.patient_id?.toString() ?? "",
         });
       } catch (err) {
         console.log(err);
@@ -40,78 +70,131 @@ export default function Edit() {
     };
 
     fetchAppointments();
-  }, []);
+  }, [id, token, form]);
 
-  const navigate = useNavigate();
-  const { id } = useParams();
+  // const handleChange = (e) => {
+  //   setForm({
+  //     ...form,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const onSubmit = async (data) => {
+    console.log("Form data to submit:", data);
 
-  const updateAppointments = async () => {
-
-    const options = {
-      method: "PATCH",
-      url: `/appointment/${id}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: {
-                ...form,
-                appointment_date: "",
-                patient_id: parseInt(form.patient_id),
-                doctor_id: parseInt(form.doctor_id)
-            }
+    const payload = {
+      doctor_id: parseInt(data.doctor_id),
+      patient_id: parseInt(data.patient_id),
+      appointment_date: data.appointment_date
+        .toISOString()
+        .split("T")[0], // "YYYY-MM-DD"
     };
+    console.log("Payload to send:", payload);
 
     try {
-      let response = await axios.request(options);
-      console.log(response.data);
+      await axios.patch(`/appointments/${id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       navigate("/appointments");
     } catch (err) {
       console.log(err);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(form);
-    updateAppointments();
-  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log(form);
+  //   updateAppointments();
+  // };
+  const [dateOpen, setDateOpen] = useState(false);
 
   return (
     <>
       <h1>Update Appointment</h1>
-      <form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="Appointment Date"
+
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 max-w-sm"
+      >
+        
+        <Controller
           name="appointment_date"
-          value={form.appointment_date}
-          onChange={handleChange}
+          control={form.control}
+          render={({ field }) => (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">
+                Appointment Date
+              </label>
+
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-between font-normal"
+                  >
+                    {field.value
+                      ? field.value.toLocaleDateString()
+                      : "Select date"}
+                    <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      setDateOpen(false);
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {form.formState.errors.appointment_date && (
+                <p className="text-xs text-red-500">
+                  {form.formState.errors.appointment_date.message}
+                </p>
+              )}
+            </div>
+          )}
         />
-        <Input
-          className="mt-2"
-          type="text"
-          placeholder="Doctor ID"
-          name="doctor_id"
-          value={form.doctor_id}
-          onChange={handleChange}
-        />
-        <Input
-          className="mt-2"
-          type="text"
-          placeholder="Patient ID"
-          name="patient_id"
-          value={form.patient_id}
-          onChange={handleChange}
-        />
-         
-        <Button className="mt-4 cursor-pointer" variant="outline" type="submit">
+
+        <div className="flex flex-col gap-1">
+          <Input
+            type="text"
+            placeholder="Doctor ID"
+            {...form.register("doctor_id")}
+          />
+          {form.formState.errors.doctor_id && (
+            <p className="text-xs text-red-500">
+              {form.formState.errors.doctor_id.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Input
+            type="text"
+            placeholder="Patient ID"
+            {...form.register("patient_id")}
+          />
+          {form.formState.errors.patient_id && (
+            <p className="text-xs text-red-500">
+              {form.formState.errors.patient_id.message}
+            </p>
+          )}
+        </div>
+
+        <Button
+          className="mt-2 cursor-pointer self-start"
+          variant="outline"
+          type="submit"
+        >
           Submit
         </Button>
       </form>

@@ -18,6 +18,11 @@ export default function Show(){
     const {id} = useParams();
     const { token } = useAuth();
 
+      const unixToLocalDateString = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toLocaleDateString(); // Format the date to a readable string
+  }
+
     useEffect(( ) => {
         const fetchAppointment = async () => {
         const options = {
@@ -31,7 +36,7 @@ export default function Show(){
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            setPatients(response.data);
+            setAppointment(response.data);
         } catch (err) {
             console.log(err);
         }
@@ -46,7 +51,7 @@ export default function Show(){
     return (
         <Card className="w-full max-w-md">
             <CardHeader>
-                <CardTitle>{appointment.appointment_date}</CardTitle>
+                <CardTitle>{unixToLocalDateString(appointment.appointment_date)}</CardTitle>
                 <CardDescription>
                     {appointment.doctor_id}
                 </CardDescription>
@@ -54,9 +59,6 @@ export default function Show(){
                     {appointment.patient_id}
                 </CardDescription>
             </CardHeader>
-            <CardContent>
-                {appointment.appointment_date}
-            </CardContent>
             <CardFooter className="flex-col gap-2">
             </CardFooter>
         </Card>

@@ -23,6 +23,11 @@ export default function Index() {
     const navigate = useNavigate();
     const { token } = useAuth();
 
+    const unixToLocalDateString = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toLocaleDateString(); // Format the date to a readable string
+  }
+
     useEffect(() => {
     const fetchAppointments = async () => {
         const options = {
@@ -77,7 +82,7 @@ export default function Index() {
       <TableBody>
         {appointments.map((appointment) => (
           <TableRow key={appointment.id}>
-            <TableCell>{appointment.appointment_date}</TableCell>
+            <TableCell>{unixToLocalDateString(appointment.appointment_date)}</TableCell>
             <TableCell>{appointment.doctor_id}</TableCell>
             <TableCell>{appointment.patient_id}</TableCell>
             <TableCell>
