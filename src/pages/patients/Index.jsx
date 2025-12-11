@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
+import { useAuth } from "@/hooks/useAuth";
 
 import {
     Table,
@@ -15,18 +16,28 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { he } from "date-fns/locale";
 
 export default function Index() {
     const [patients, setPatients] = useState([]);
 
     const navigate = useNavigate();
+    const { token } = useAuth();
+
+    const unixToLocalDateString = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toLocaleDateString(); // Format the date to a readable string
+  }
 
     useEffect(() => {
     const fetchPatients = async () => {
         const options = {
         method: "GET",
         url: "/patients",
-        };
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      };
 
         try {
             let response = await axios.request(options);
@@ -78,7 +89,7 @@ export default function Index() {
             <TableCell>{patient.last_name}</TableCell>
             <TableCell>{patient.email}</TableCell>
             <TableCell>{patient.phone}</TableCell>
-            <TableCell>{patient.date_of_birth}</TableCell>
+            <TableCell>{unixToLocalDateString(patient.date_of_birth)}</TableCell>
             <TableCell>{patient.address}</TableCell>
             <TableCell>
               <div className="flex gap-2">

@@ -18,6 +18,11 @@ export default function Show(){
     const {id} = useParams();
     const { token } = useAuth();
 
+    const unixToLocalDateString = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toLocaleDateString(); // Format the date to a readable string
+  }
+
     useEffect(( ) => {
         const fetchPatients = async () => {
         const options = {
@@ -54,7 +59,7 @@ export default function Show(){
                     {patients.phone}
                 </CardDescription>
                 <CardDescription>
-                    {patients.date_of_birth}
+                    {unixToLocalDateString(patients.date_of_birth)}
                 </CardDescription>
                 <CardDescription>
                     {patients.address}
