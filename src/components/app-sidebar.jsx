@@ -61,7 +61,7 @@ const data = {
     },
     {
       title: "Prescriptions",
-      url: "#",
+      url: "/prescriptions",
       icon: IconPillFilled,
     },
   ]
