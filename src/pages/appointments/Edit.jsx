@@ -18,10 +18,18 @@ import {
 } from "@/components/ui/popover"
 import { ChevronDownIcon } from "lucide-react";
 
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+
 const formSchema = z.object({
   appointment_date: z.date({ required_error: "Appointment date is required" }),
-  doctor_id: z.string().min(1, "Doctor ID is required"),
-  patient_id: z.string().min(1, "Patient ID is required"),
+  doctor_id: z.string().min(1, "Doctor is required"),
+  patient_id: z.string().min(1, "Patient is required"),
 });
 
 export default function Edit() {
@@ -29,6 +37,10 @@ export default function Edit() {
   const { token } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  	const [doctors, setDoctors] = useState([]);
+	const [patients, setPatients] = useState([]);
+
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -71,6 +83,36 @@ export default function Edit() {
 
     fetchAppointments();
   }, [id, token, form]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get("/doctors", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setDoctors(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+  if (token) fetchDoctors();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const res = await axios.get("/patients", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPatients(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+  if (token) fetchPatients();
+  }, [token]);
 
   // const handleChange = (e) => {
   //   setForm({
@@ -164,31 +206,59 @@ export default function Edit() {
           )}
         />
 
-        <div className="flex flex-col gap-1">
-          <Input
-            type="text"
-            placeholder="Doctor ID"
-            {...form.register("doctor_id")}
-          />
-          {form.formState.errors.doctor_id && (
-            <p className="text-xs text-red-500">
-              {form.formState.errors.doctor_id.message}
-            </p>
-          )}
-        </div>
+        <Controller
+					name="doctor_id"
+					control={form.control}
+					render={({ field }) => (
+						<div className="flex flex-col gap-1">
+							<label className="text-sm font-medium">Doctor</label>
+							<Select value={field.value} onValueChange={field.onChange}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select a doctor" />
+								</SelectTrigger>
+								<SelectContent>
+									{doctors.map((doctor) => (
+										<SelectItem key={doctor.id} value={doctor.id.toString()}>
+											{doctor.first_name} {doctor.last_name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{form.formState.errors.doctor_id && (
+								<p className="text-xs text-red-500">
+									{form.formState.errors.doctor_id.message}
+								</p>
+							)}
+						</div>
+					)}
+				/>
 
-        <div className="flex flex-col gap-1">
-          <Input
-            type="text"
-            placeholder="Patient ID"
-            {...form.register("patient_id")}
-          />
-          {form.formState.errors.patient_id && (
-            <p className="text-xs text-red-500">
-              {form.formState.errors.patient_id.message}
-            </p>
-          )}
-        </div>
+				<Controller
+					name="patient_id"
+					control={form.control}
+					render={({ field }) => (
+						<div className="flex flex-col gap-1">
+							<label className="text-sm font-medium">Patient</label>
+							<Select value={field.value} onValueChange={field.onChange}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select a patient" />
+								</SelectTrigger>
+								<SelectContent>
+									{patients.map((patient) => (
+										<SelectItem key={patient.id} value={patient.id.toString()}>
+											{patient.first_name} {patient.last_name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{form.formState.errors.patient_id && (
+								<p className="text-xs text-red-500">
+									{form.formState.errors.patient_id.message}
+								</p>
+							)}
+						</div>
+					)}
+				/>
 
         <Button
           className="mt-2 cursor-pointer self-start"
