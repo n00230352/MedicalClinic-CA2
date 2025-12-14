@@ -56,7 +56,7 @@ const data = {
     },
     {
       title: "Diagnoses",
-      url: "#",
+      url: "/diagnoses",
       icon: IconClipboardSearch,
     },
     {
