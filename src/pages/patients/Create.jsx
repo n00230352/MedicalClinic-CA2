@@ -25,7 +25,7 @@ const formSchema = z.object({
     .nonempty("Invalid email address")
     .email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
-  date_of_birth: z.date().min(1, "Date of birth is required"),
+  date_of_birth: z.date({ required_error: "Date of birth is required" }),
   address: z.string().min(1, "Address is required"),
 });
 
@@ -40,7 +40,7 @@ export default function Create() {
       last_name: "",
       email: "",
       phone: "",
-      date_of_birth: "",
+      date_of_birth: undefined,
       address: "",
     },
     mode: "onChange",

@@ -26,7 +26,7 @@ const formSchema = z.object({
     .nonempty("Invalid email address")
     .email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
-  date_of_birth: z.date().min(1, "Date of birth is required"),
+  date_of_birth: z.date({ required_error: "Date of birth is required" }),
   address: z.string().min(1, "Address is required"),
 });
 
@@ -43,7 +43,7 @@ export default function Edit() {
       last_name: "",
       email: "",
       phone: "",
-      date_of_birth: "",
+      date_of_birth: undefined,
       address: "",
     },
     mode: "onChange",
@@ -66,14 +66,14 @@ export default function Edit() {
         const patient = response.data;
         console.log("Fetched patient:", patient);
         form.reset({
-          first_name: patient.first_name?.toString() ?? "",
-          last_name: patient.last_name?.toString() ?? "",
-          email: patient.email?.toString() ?? "",
+          first_name: patient.first_name,
+          last_name: patient.last_name,
+          email: patient.email,
           phone: patient.phone?.toString() ?? "",
           date_of_birth: patient.date_of_birth
             ? new Date(patient.date_of_birth)
             : undefined,
-          address: patient.address?.toString() ?? "",
+          address: patient.address,
         });
       } catch (err) {
         console.log(err);
@@ -92,17 +92,18 @@ export default function Edit() {
   //   });
   // };
 
-  const onSubmit = async () => {
-    console.log("Form data to submit:", form);
+  const onSubmit = async (data) => {
+    console.log("Form data to submit:", data);
 
     const payload = {
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
-      phone: data.phone,
+      phone: data.phone.toString(),
       date_of_birth: data.date_of_birth.toISOString().split("T")[0], // "YYYY-MM-DD"
       address: data.address,
     };
+    console.log("Payload to send:", payload);
 
 
     try {
@@ -113,9 +114,11 @@ export default function Edit() {
           });
           navigate("/patients");
         } catch (err) {
-          console.log(err);
+          console.log(err.response?.data?.error?.issues);
         }
       };
+
+      const [dateOpen, setDateOpen] = useState(false);
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -126,7 +129,7 @@ export default function Edit() {
   return (
     <>
       <h1>Update Patient</h1>
-      <form onSubmit={form.handleSubmit} className="flex flex-col gap-4 max-w-sm">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 max-w-sm">
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium">First name</label>
@@ -193,7 +196,7 @@ export default function Edit() {
                 Date of Birth
               </label>
 
-              <Popover>
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
@@ -210,7 +213,10 @@ export default function Edit() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      setDateOpen(false);
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
