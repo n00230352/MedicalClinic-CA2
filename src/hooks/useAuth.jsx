@@ -21,6 +21,27 @@ export const AuthProvider = ({ children }) => {
         }
     });
 
+    const onRegister = async (data) => {
+  const options = {
+    method: "POST",
+    url: "/register",
+    data,
+  };
+
+  try {
+    const response = await axios.request(options);
+    console.log(response.data);
+
+    // Save token so user is logged in immediately
+    localStorage.setItem("token", response.data.token);
+    setToken(response.data.token);
+
+    return response.data;
+  } catch (err) {
+    return err.response?.data;
+  }
+};
+
     const onLogin = async (email, password) => {
         const options = {
             method: "POST",
@@ -50,6 +71,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         token,
         onLogin,
+        onRegister,
         onLogout
     };
 
