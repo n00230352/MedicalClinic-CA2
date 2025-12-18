@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "@/config/api";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
 import {
@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function Show() {
   const [appointment, setAppointment] = useState([]);
@@ -20,6 +21,8 @@ export default function Show() {
 
   const { id } = useParams();
   const { token } = useAuth();
+   const navigate = useNavigate();
+
 
   const unixToLocalDateString = (unixTimestamp) => {
     const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
@@ -87,13 +90,30 @@ export default function Show() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Date: 
-          {unixToLocalDateString(appointment.appointment_date)}
+        <CardTitle className="text-xl">
+  Appointment Details
         </CardTitle>
-        <CardDescription>Doctor: {getDoctorName(appointment.doctor_id)}</CardDescription>
-        <CardDescription>Patient: {getPatientName(appointment.patient_id)}</CardDescription>
+        <CardDescription>Date: {unixToLocalDateString(appointment.appointment_date)}</CardDescription>
       </CardHeader>
-      <CardFooter className="flex-col gap-2"></CardFooter>
+
+   <CardContent className="space-y-2">
+        <div className="text-sm">
+          <span className="text-muted-foreground">Doctor: </span>
+          {getDoctorName(appointment.doctor_id)}
+        </div>
+
+        <div className="text-sm">
+          <span className="text-muted-foreground">Patient: </span>
+          {getPatientName(appointment.patient_id)}
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex justify-end gap-2">
+
+        <Button variant="outline" onClick={() => navigate("/appointments")}>
+          Back to Appointments
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

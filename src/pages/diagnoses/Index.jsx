@@ -83,7 +83,6 @@ export default function Index() {
 			</Button>
 
 			<Table>
-				<TableCaption>A list of your recent invoices.</TableCaption>
 				<TableHeader>
 					<TableRow>
 						{/* <TableHead></TableHead> */}
