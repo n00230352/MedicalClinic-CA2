@@ -1,13 +1,19 @@
-# Front-End Development Starter Code
+# Front-End Development CA2
+This project is a front-end application built using React as part of the Front-End Development CA2.  
+It connects to the provided API and allows users to manage doctors, patients, appointments, and diagnoses.
 
-This template provides a minimal setup to get started on CA2. It has Vite + React + ReactRouter + Tailwind CSS + ShadCN installed.
+The application includes authentication and full CRUD functionality.
 
-## Instructions:
+## Technologies Used
 
-1. Make a copy of this repo
-2. Give the copy the name of your application e.g. `ca2-festivals-example`
-3. Change the `name` property in `package.json` to your application name
-4. `npm install`
-5. `npx shadcn@latest init` // you only need to do this once
-    - Select a base color
-6. `npm run dev`
+- React (Vite)
+- Tailwind CSS
+- shadcn/ui
+- Axios
+- React Router
+- Zod
+
+## How to run the project:
+1. `npm install`
+2. `npx shadcn@latest init` // you only need to do this once
+3. `npm run dev`
