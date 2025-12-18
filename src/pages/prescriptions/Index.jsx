@@ -121,7 +121,6 @@ export default function Index() {
 			</Button>
 
 			<Table>
-				<TableCaption>A list of your recent invoices.</TableCaption>
 				<TableHeader>
 					<TableRow>
 						{/* <TableHead></TableHead> */}
@@ -132,7 +131,7 @@ export default function Index() {
 						<TableHead>Medication</TableHead>
 						<TableHead>Dosage</TableHead>
 						<TableHead>Starting date</TableHead>
-						<TableHead>Ending date</TableHead>
+						<TableHead>Actions</TableHead>
 						{/* <TableHead>BUTTONS</TableHead> */}
 					</TableRow>
 				</TableHeader>
@@ -148,10 +147,7 @@ export default function Index() {
 							<TableCell>{prescription.medication}</TableCell>
 							<TableCell>{prescription.dosage}</TableCell>
 							<TableCell>
-								{unixToLocalDateString(prescription.start_date)}
-							</TableCell>
-							<TableCell>
-								{unixToLocalDateString(prescription.end_date)}
+								{unixToLocalDateString(prescription.start_date)} - {unixToLocalDateString(prescription.end_date)}
 							</TableCell>
 							<TableCell>
 								<div className="flex gap-2">

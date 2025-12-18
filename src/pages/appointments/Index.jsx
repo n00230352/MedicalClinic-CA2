@@ -110,7 +110,7 @@ export default function Index() {
 						<TableHead>Appointment Date</TableHead>
 						<TableHead>Doctor</TableHead>
 						<TableHead>Patient</TableHead>
-						{/* <TableHead>BUTTONS</TableHead> */}
+						<TableHead>Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>

@@ -70,7 +70,6 @@ export default function Index() {
 				</Button>
 			</div>
 			<Table>
-				<TableCaption>A list of your recent invoices.</TableCaption>
 				<TableHeader>
 					<TableRow>
 						<TableHead>Patient</TableHead>
